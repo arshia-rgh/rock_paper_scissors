@@ -74,9 +74,9 @@ def main():
         clear_terminal()
         if selected == MainMenuOption.START.value:
             selected_mode = start_game_menu()
-            if selected_mode == ModeMenuOption.AI.value:
+            if selected_mode == StartMenuOption.AI.value:
                 pass
-            elif selected_mode == ModeMenuOption.PLAYER.value:
+            elif selected_mode == StartMenuOption.PLAYER.value:
                 pass
 
             else:
