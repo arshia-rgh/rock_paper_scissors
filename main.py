@@ -59,10 +59,19 @@ def create_player_menu():
     print("Please chose the game mode you want: ")
 
 
+def play_game_player():
+    pass
+
+
+def play_game_ai():
+    pass
+
+
 def main():
     while True:
         clear_terminal()
         selected = main_menu()
+        clear_terminal()
         if selected == MainMenuOption.START.value:
             selected_mode = start_game_menu()
             pass
