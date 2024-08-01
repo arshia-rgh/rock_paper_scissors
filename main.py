@@ -1,6 +1,8 @@
+from enum import Enum
+
 import typer
 from rich import print
-from enum import Enum
+
 from utils.cli import clear_terminal
 
 
@@ -45,7 +47,7 @@ def main_menu():
 
 def start_game_menu():
     print("Welcome --")
-    print(":warning [bold red] Note that you need to have at least one player to play any mode[/bold red] :warning")
+    print(":warning: [bold red] Note that you need to have at least one player to play any mode[/bold red] :warning:")
     print("1 - VS AI")
     print("2 - VS PLAYER")
     print("3 - Back to main")
