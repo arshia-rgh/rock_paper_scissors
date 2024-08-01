@@ -1,5 +1,6 @@
+import random
 from enum import Enum
-
+from typing import Optional
 import typer
 from rich import print
 from rich.table import Table
@@ -22,6 +23,12 @@ class User:
 
     def __repr__(self):
         return f"User({self.name})"
+
+
+class BaseOption(Enum):
+    ROCK = 1
+    PAPER = 2
+    SCISSORS = 3
 
 
 class MainMenuOption(Enum):
@@ -61,7 +68,7 @@ def start_game_menu():
 
 def create_player_menu():
     print("Please enter your name: ")
-    name = input("Your Name: :pause_button:")
+    name = input("Your Name 🙎🏻‍♂️ :  ")
     user = User(name)
 
     user.save_to_db()
@@ -72,7 +79,7 @@ def leaderboard_menu():
     users = User.list_db
     table = Table("Player", "Score")
     for user in users:
-        table.add_row(user.name, user.score)
+        table.add_row(user.name, str(user.score))
     print(table)
 
 
@@ -85,23 +92,80 @@ def select_player():
     print("Please select the player you want to plays as: ")
     if users:
 
-        for user in users:
-            i = 1
-            text = f"{1} - {user.name}"
-            print(text)
-            i += 1
+        for i, user in enumerate(users, start=1):
+            print(f"{i} - {user.name}")
         chosen_name = input("selected name: (Should write the name not the number)")
-        if isinstance(chosen_name, str) and chosen_name in User.list_db:
-            print(f"{chosen_name} player selected")
-            return chosen_name
+        for user in users:
+            if user.name == chosen_name:
+                clear_terminal()
+                print(f"{chosen_name} player selected")
+                return user
+        clear_terminal()
+        print("Wrong player")
+        select_player()
 
-        return "Wrong player"
+    print("There is no players ... ! ")
+    return None
 
-    return "There is no players ... ! "
+
+def get_winner(p1_number: int, p2_number: int) -> Optional[int]:
+    if p1_number == 1:
+        if p2_number == 3:
+            return p1_number
+        elif p2_number == 2:
+            return p2_number
+        return None
+
+    elif p1_number == 2:
+        if p2_number == 1:
+            return p1_number
+        elif p2_number == 3:
+            return p2_number
+        return None
+
+    else:
+        if p2_number == 1:
+            return p2_number
+        elif p2_number == 2:
+            return p1_number
+        return None
 
 
 def play__game_ai():
     player = select_player()
+    if not player:
+        print("[bold yellow]Create a user first[/bold yellow]")
+        return None
+    ai_score = 0
+    player_score = 0
+    while True:
+        ai_number = random.randint(1, 3)
+        print("1 - ROCK :video_game:")
+        print("2 - PAPER :video_game:")
+        print("3 - SCISSORS :video_game:")
+        player_number = int(input("Which do you chose?: "))
+        if player_number and ai_number in [1, 2, 3]:
+            winner = get_winner(ai_number, player_number)
+            if winner == player_number:
+                player_score += 1
+                print("Congratulations you won :))))")
+            else:
+                print("You lost ")
+                ai_score += 1
+        else:
+            print("You can enter number between 1-3 to chose ")
+
+        is_retry = input("Wanna play another match?: (yes-no)").lower()
+
+        if is_retry == "no":
+            break
+    player.score += player_score
+    if player_score > ai_score:
+        print("You won totally")
+    elif player_score < ai_score:
+        print("You lost totally")
+    else:
+        print("Draw")
 
 
 def main():
@@ -111,8 +175,11 @@ def main():
         clear_terminal()
         if selected == MainMenuOption.START.value:
             selected_mode = start_game_menu()
+            clear_terminal()
             if selected_mode == StartMenuOption.AI.value:
-                pass
+                play__game_ai()
+                print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
+                input()
             elif selected_mode == StartMenuOption.PLAYER.value:
                 pass
 
@@ -121,7 +188,7 @@ def main():
         elif selected == MainMenuOption.CREATE.value:
             create_player_menu()
             print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
-            input("")
+            input()
             continue
         elif selected == MainMenuOption.LEADERBOARD.value:
             leaderboard_menu()
