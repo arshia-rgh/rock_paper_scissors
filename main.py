@@ -1,3 +1,4 @@
+import time
 from enum import Enum
 
 import typer
@@ -9,7 +10,7 @@ from utils.cli import clear_terminal
 class User:
     dict_db = {}
 
-    def __init__(self, name: str, score: int):
+    def __init__(self, name: str, score: int = 0):
         self.name = name
         self.score = score
 
@@ -56,7 +57,13 @@ def start_game_menu():
 
 
 def create_player_menu():
-    print("Please chose the game mode you want: ")
+    print("Please enter your name: ")
+    name = input("Your Name: :pause_button:")
+    user = User(name)
+
+    user.save_to_db()
+    print(f"Player [blue]{user.name}[/blue] successfully added ! ")
+    print("Redirecting to the [bold red]main menu[/bold red] ... ")
 
 
 def play__game_player():
@@ -82,7 +89,9 @@ def main():
             else:
                 continue
         elif selected == MainMenuOption.CREATE.value:
-            pass
+            create_player_menu()
+            time.sleep(5)
+            continue
         elif selected == MainMenuOption.LEADERBOARD.value:
             pass
         else:
