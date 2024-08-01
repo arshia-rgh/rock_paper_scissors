@@ -1,14 +1,14 @@
-import time
 from enum import Enum
 
 import typer
 from rich import print
+from rich.table import Table
 
 from utils.cli import clear_terminal
 
 
 class User:
-    dict_db = {}
+    list_db = []
 
     def __init__(self, name: str, score: int = 0):
         self.name = name
@@ -18,7 +18,10 @@ class User:
         self.score += 1
 
     def save_to_db(self):
-        self.dict_db[self.name] = self.score
+        self.list_db.append(self)
+
+    def __repr__(self):
+        return f"User({self.name})"
 
 
 class MainMenuOption(Enum):
@@ -63,15 +66,42 @@ def create_player_menu():
 
     user.save_to_db()
     print(f"Player [blue]{user.name}[/blue] successfully added ! ")
-    print("Redirecting to the [bold red]main menu[/bold red] ... ")
+
+
+def leaderboard_menu():
+    users = User.list_db
+    table = Table("Player", "Score")
+    for user in users:
+        table.add_row(user.name, user.score)
+    print(table)
 
 
 def play__game_player():
     pass
 
 
+def select_player():
+    users = User.list_db
+    print("Please select the player you want to plays as: ")
+    if users:
+
+        for user in users:
+            i = 1
+            text = f"{1} - {user.name}"
+            print(text)
+            i += 1
+        chosen_name = input("selected name: (Should write the name not the number)")
+        if isinstance(chosen_name, str) and chosen_name in User.list_db:
+            print(f"{chosen_name} player selected")
+            return chosen_name
+
+        return "Wrong player"
+
+    return "There is no players ... ! "
+
+
 def play__game_ai():
-    pass
+    player = select_player()
 
 
 def main():
@@ -90,10 +120,14 @@ def main():
                 continue
         elif selected == MainMenuOption.CREATE.value:
             create_player_menu()
-            time.sleep(5)
+            print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
+            input("")
             continue
         elif selected == MainMenuOption.LEADERBOARD.value:
-            pass
+            leaderboard_menu()
+            print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
+            input()
+            continue
         else:
             print("Goodbye :red_heart-emoji:")
             break
