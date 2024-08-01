@@ -71,7 +71,8 @@ def main():
         elif selected == MainMenuOption.LEADERBOARD.value:
             pass
         else:
-            print("Goodbye :)")
+            print("Goodbye :red_heart-emoji:")
+            break
 
 
 if __name__ == '__main__':
