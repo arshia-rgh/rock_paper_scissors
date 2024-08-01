@@ -27,7 +27,7 @@ class MainMenuOption(Enum):
     EXIT = 4
 
 
-class ModeMenuOption(Enum):
+class StartMenuOption(Enum):
     AI = 1
     PLAYER = 2
     BACK = 3
@@ -59,11 +59,11 @@ def create_player_menu():
     print("Please chose the game mode you want: ")
 
 
-def play_game_player():
+def play__game_player():
     pass
 
 
-def play_game_ai():
+def play__game_ai():
     pass
 
 
@@ -74,7 +74,13 @@ def main():
         clear_terminal()
         if selected == MainMenuOption.START.value:
             selected_mode = start_game_menu()
-            pass
+            if selected_mode == ModeMenuOption.AI.value:
+                pass
+            elif selected_mode == ModeMenuOption.PLAYER.value:
+                pass
+
+            else:
+                continue
         elif selected == MainMenuOption.CREATE.value:
             pass
         elif selected == MainMenuOption.LEADERBOARD.value:
