@@ -160,7 +160,9 @@ def play__game_ai():
 
         if is_retry == "no":
             break
+
     player.score += player_score
+
     if player_score > ai_score:
         print("You won totally")
     elif player_score < ai_score:
@@ -170,8 +172,21 @@ def play__game_ai():
 
 
 def play__game_player():
-    print("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red]")
+    print("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red])")
     players_number = int(input("Select a number: "))
+    if players_number < 2:
+        clear_terminal()
+        print("You need at least 2 player :)) [You cant play with yourself] 🤓")
+
+        play__game_player()
+
+    selected_players = []
+    for i in range(players_number):
+        player = select_player()
+        if not player:
+            print("[bold yellow]Create a user first[/bold yellow]")
+            return None
+        selected_players.append(player)
 
 
 def main():
@@ -187,7 +202,8 @@ def main():
                 print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
                 input()
             elif selected_mode == StartMenuOption.PLAYER.value:
-                pass
+                play__game_player()
+                input()
 
             else:
                 continue
