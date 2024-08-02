@@ -83,10 +83,6 @@ def leaderboard_menu():
     print(table)
 
 
-def play__game_player():
-    pass
-
-
 def select_player() -> Optional[User]:
     users = User.list_db
     print("Please select the player you want to plays as: ")
@@ -102,6 +98,7 @@ def select_player() -> Optional[User]:
                 return user
         clear_terminal()
         print("Wrong player")
+
         select_player()
 
     print("There is no players ... ! ")
@@ -170,6 +167,11 @@ def play__game_ai():
         print("You lost totally")
     else:
         print("Draw")
+
+
+def play__game_player():
+    print("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red]")
+    players_number = int(input("Select a number: "))
 
 
 def main():
