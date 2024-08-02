@@ -44,7 +44,7 @@ class StartMenuOption(Enum):
     BACK = 3
 
 
-def main_menu():
+def main_menu() -> int:
     print("*****************************")
     print("*****[green]Welcome to our game[/green]*****")
     print("Please enter what do you want to do: ")
@@ -56,7 +56,7 @@ def main_menu():
     return option
 
 
-def start_game_menu():
+def start_game_menu() -> int:
     print("Welcome --")
     print(":warning: [bold red] Note that you need to have at least one player to play any mode[/bold red] :warning:")
     print("1 - VS AI")
@@ -87,7 +87,7 @@ def play__game_player():
     pass
 
 
-def select_player():
+def select_player() -> Optional[User]:
     users = User.list_db
     print("Please select the player you want to plays as: ")
     if users:
@@ -144,16 +144,20 @@ def play__game_ai():
         print("2 - PAPER :video_game:")
         print("3 - SCISSORS :video_game:")
         player_number = int(input("Which do you chose?: "))
-        if player_number and ai_number in [1, 2, 3]:
+        if player_number in [1, 2, 3] and ai_number in [1, 2, 3]:
             winner = get_winner(ai_number, player_number)
             if winner == player_number:
                 player_score += 1
+                clear_terminal()
                 print("Congratulations you won :))))")
             else:
+                clear_terminal()
                 print("You lost ")
                 ai_score += 1
         else:
+            clear_terminal()
             print("You can enter number between 1-3 to chose ")
+            continue
 
         is_retry = input("Wanna play another match?: (yes-no)").lower()
 
