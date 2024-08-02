@@ -94,7 +94,7 @@ def select_player() -> Optional[User]:
         for user in users:
             if user.name == chosen_name:
                 clear_terminal()
-                print(f"{chosen_name} player selected")
+                print(f" 🙎‍♂️ {chosen_name} player selected 🙎‍♂️ ")
                 return user
         clear_terminal()
         print("Wrong player")
