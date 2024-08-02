@@ -69,6 +69,12 @@ def start_game_menu() -> int:
 def create_player_menu():
     print("Please enter your name: ")
     name = input("Your Name 🙎🏻‍♂️ :  ")
+    if not name:
+        clear_terminal()
+        print("Name must contain at least one character")
+
+        create_player_menu()
+
     user = User(name)
 
     user.save_to_db()
