@@ -203,6 +203,7 @@ def main():
                 input()
             elif selected_mode == StartMenuOption.PLAYER.value:
                 play__game_player()
+                print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
                 input()
 
             else:
