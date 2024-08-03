@@ -204,6 +204,12 @@ def play__game_player():
             return None
         selected_players.append(player)
 
+    while True:
+        player_1 = random.randint(1, players_number)
+        player_2 = random.randint(1, players_number)
+        while player_1 == player_2:
+            player_2 = random.randint(1, players_number)
+
 
 def main():
     while True:
