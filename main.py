@@ -1,4 +1,5 @@
 import random
+import time
 from enum import Enum
 from typing import Optional
 
@@ -196,19 +197,53 @@ def play__game_player():
 
         play__game_player()
 
-    selected_players = []
+    selected_players = {}
     for i in range(players_number):
         player = select_player()
         if not player:
             print("[bold yellow]Create a user first[/bold yellow]")
             return None
-        selected_players.append(player)
+        selected_players[player] = 0
 
     while True:
-        player_1 = random.randint(1, players_number)
-        player_2 = random.randint(1, players_number)
+        player_1 = random.choice(list(selected_players.keys()))
+        player_2 = random.choice(list(selected_players.keys()))
         while player_1 == player_2:
-            player_2 = random.randint(1, players_number)
+            player_2 = random.choice(list(selected_players.keys()))
+
+        print(f"[bold red]{player_1.name}[/bold red] and [bold red]{player_2.name}[/bold red] will play for the first "
+              f"round ")
+        print("The game will be start in 3s ...")
+        time.sleep(3)
+        clear_terminal()
+        print("1 - ROCK :video_game:")
+        print("2 - PAPER :video_game:")
+        print("3 - SCISSORS :video_game:")
+        player_1_choice = int(input(f"What is your choice: -👉{player_1.name}👈-\n"))
+        clear_terminal()
+        player_2_choice = int(input(f"What is your choice: -👉{player_2.name}👈-\n"))
+
+        if player_1_choice in [1, 2, 3] and player_2_choice in [1, 2, 3]:
+            winner = get_winner(player_1_choice, player_2_choice)
+            if winner == player_1_choice:
+                print(f"{player_1.name} won ! ")
+                selected_players[player_1] += 1
+            else:
+                print(f"{player_2.name} won ! ")
+                selected_players[player_2] += 1
+        else:
+            print("You can enter number between 1-3 to chose ")
+            continue
+
+        is_retry = input("Wanna play another match?: (yes-no)").lower()
+
+        if is_retry == "no":
+            break
+    sorted_by_score_players = dict(sorted(selected_players.items(), key=lambda x: x[1]))
+    total_winner = next(iter(sorted_by_score_players.items()))[0]
+    print(f"Total winner is {total_winner.name}")
+    for player, score in selected_players.items():
+        player.score += score
 
 
 def main():
