@@ -1,6 +1,7 @@
 import random
 from enum import Enum
 from typing import Optional
+
 import typer
 from rich import print
 from rich.table import Table
@@ -20,6 +21,10 @@ class User:
 
     def save_to_db(self):
         self.list_db.append(self)
+
+    @classmethod
+    def is_name_unique(cls, name: str) -> bool:
+        return all(user.name != name for user in User.list_db)
 
     def __repr__(self):
         return f"User({self.name})"
@@ -73,6 +78,11 @@ def create_player_menu():
         clear_terminal()
         print("Name must contain at least one character")
 
+        create_player_menu()
+
+    if not User.is_name_unique(name):
+        clear_terminal()
+        print("The name should be [bold red]unique[/bold red], the user with this name already exists !")
         create_player_menu()
 
     user = User(name)
