@@ -1,8 +1,7 @@
 import random
 import time
-from enum import Enum
 from typing import Optional
-
+from constants import *
 import typer
 from rich import print
 from rich.table import Table
@@ -10,46 +9,6 @@ from rich.table import Table
 from utils.cli import clear_terminal
 from user_repository import user_repo
 from database.models import User
-
-
-class User:
-    list_db = []
-
-    def __init__(self, name: str, score: int = 0):
-        self.name = name
-        self.score = score
-
-    def increase_score(self):
-        self.score += 1
-
-    def save_to_db(self):
-        self.list_db.append(self)
-
-    @classmethod
-    def is_name_unique(cls, name: str) -> bool:
-        return all(user.name != name for user in User.list_db)
-
-    def __repr__(self):
-        return f"User({self.name})"
-
-
-class BaseOption(Enum):
-    ROCK = 1
-    PAPER = 2
-    SCISSORS = 3
-
-
-class MainMenuOption(Enum):
-    START = 1
-    CREATE = 2
-    LEADERBOARD = 3
-    EXIT = 4
-
-
-class StartMenuOption(Enum):
-    AI = 1
-    PLAYER = 2
-    BACK = 3
 
 
 def main_menu() -> int:
