@@ -42,19 +42,15 @@ def create_player_menu():
 
         create_player_menu()
 
-    if not User.is_name_unique(name):
-        clear_terminal()
-        print("The name should be [bold red]unique[/bold red], the user with this name already exists !")
-        create_player_menu()
-
-    user = User(name)
-
-    user.save_to_db()
-    print(f"Player [blue]{user.name}[/blue] successfully added ! ")
+    user = user_repo.create(User(name=name))
+    if isinstance(user, Exception):
+        print(f"Error creating user: {user}")
+    else:
+        print(f"Player [blue]{user.name}[/blue] successfully added ! ")
 
 
 def leaderboard_menu():
-    users = User.list_db
+    users = user_repo.get_all()
     table = Table("Player", "Score")
     for user in users:
         table.add_row(user.name, str(user.score))
@@ -62,7 +58,7 @@ def leaderboard_menu():
 
 
 def select_player() -> Optional[User]:
-    users = User.list_db
+    users = user_repo.get_all()
     print("Please select the player you want to plays as: ")
     if users:
 
@@ -140,6 +136,7 @@ def play__game_ai():
             break
 
     player.score += player_score
+    user_repo.update(player)
 
     if player_score > ai_score:
         print("You won totally")
@@ -205,6 +202,7 @@ def play__game_player():
     print(f"Total winner is {total_winner.name}")
     for player, score in selected_players.items():
         player.score += score
+        user_repo.update(player)
 
 
 def main():

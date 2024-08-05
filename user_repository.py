@@ -21,7 +21,7 @@ class UserRepository:
         try:
             user = item
             self.db.add(item)
-            self.db.commit(item)
+            self.db.commit()
             self.db.refresh(item)
             return user
         except Exception as e:
