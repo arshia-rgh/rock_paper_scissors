@@ -197,7 +197,7 @@ def play__game_player():
 
         if is_retry == "no":
             break
-    sorted_by_score_players = dict(sorted(selected_players.items(), key=lambda x: x[1]))
+    sorted_by_score_players = dict(sorted(selected_players.items(), key=lambda x: x[1], reverse=True))
     total_winner = next(iter(sorted_by_score_players.items()))[0]
     print(f"Total winner is {total_winner.name}")
     for player, score in selected_players.items():
