@@ -32,6 +32,17 @@ A simple Rock Paper Scissors game implemented in Python.
     ```sh
     pip install -r requirements.txt
     ```
+## Contribute
+
+3 - Make a copy of `sample.env` and change the variables
+```bash
+cp sample.env .env
+```
+
+4 - Run the following command to apply migrations to the database
+```bash
+alembic upgrade head
+```
 
 ## Usage
 Run the game using the following command:
