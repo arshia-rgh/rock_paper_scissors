@@ -8,6 +8,8 @@ from rich import print
 from rich.table import Table
 
 from utils.cli import clear_terminal
+from user_repository import user_repo
+from database.models import User
 
 
 class User:
