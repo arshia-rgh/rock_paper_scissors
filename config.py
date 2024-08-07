@@ -1,4 +1,5 @@
 import os
+import socket
 
 from dotenv import load_dotenv
 
@@ -14,5 +15,5 @@ class Config:
 
 
 class SocketConfig:
-    HOST_IP = os.getenv("HOST_IP")
-    HOST_PORT = os.getenv("HOST_PORT")
+    HOST_IP = os.getenv("HOST_IP", socket.gethostbyname(socket.gethostname()))
+    HOST_PORT = os.getenv("HOST_PORT", 12345)
