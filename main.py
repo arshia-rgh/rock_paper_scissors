@@ -1,12 +1,14 @@
 import random
 import time
 from typing import Optional
+
 from rich import print
+from rich.console import Console
 from rich.table import Table
 
-from utils.cli import clear_terminal
-from user_repository import user_repo
 from database.models import User
+from user_repository import user_repo
+from utils.cli import clear_terminal
 
 
 def main_menu(client_socket) -> int:
@@ -62,8 +64,11 @@ def leaderboard_menu(client_socket):
     table = Table("Player", "Score")
     for user in users:
         table.add_row(user.name, str(user.score))
-    client_socket.send(table)
-    print(table)
+    console = Console()
+    with console.capture() as capture:
+        console.print(table)
+    table_str = capture.get()
+    client_socket.send(table_str.encode())
 
 
 def select_player(client_socket) -> Optional[User]:
