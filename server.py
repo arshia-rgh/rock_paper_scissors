@@ -1,11 +1,11 @@
 import socket
 import threading
-from constants import *
+
 import typer
 
-from main import *
-from constants import *
 from config import SocketConfig
+from constants import *
+from main import *
 
 
 def handle_client(client_socket):
