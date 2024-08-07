@@ -2,6 +2,7 @@ import socket
 import threading
 
 import typer
+from rich import print
 
 from config import SocketConfig
 from utils.cli import clear_terminal
