@@ -1,4 +1,4 @@
-from server.database.base import base
+from .base import base
 import sqlalchemy as db
 
 

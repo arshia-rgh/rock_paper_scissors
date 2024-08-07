@@ -1,8 +1,6 @@
 import random
 import time
 from typing import Optional
-from constants import *
-import typer
 from rich import print
 from rich.table import Table
 
@@ -11,71 +9,82 @@ from user_repository import user_repo
 from database.models import User
 
 
-def main_menu() -> int:
-    print("*****************************")
-    print("*****[green]Welcome to our game[/green]*****")
-    print("Please enter what do you want to do: ")
-    print("1 - Start the game")
-    print("2 - Create new player")
-    print("3 - Check leaderboard")
-    print("4 - Exit")
-    option = int(input("Enter your option number: "))
+def main_menu(client_socket) -> int:
+    menu = (
+        "*****************************\n"
+        "*****[green]Welcome to our game[/green]*****\n"
+        "Please enter what do you want to do: \n"
+        "1 - Start the game\n"
+        "2 - Create new player\n"
+        "3 - Check leaderboard\n"
+        "4 - Exit\n"
+        "Enter your option number: \n"
+    )
+    client_socket.send(menu.encode())
+    option = int(client_socket.recv(1024).decode())
     return option
 
 
-def start_game_menu() -> int:
-    print("Welcome --")
-    print(":warning: [bold red] Note that you need to have at least one player to play any mode[/bold red] :warning:")
-    print("1 - VS AI")
-    print("2 - VS PLAYER")
-    print("3 - Back to main")
-    option = int(input("Enter your option number: "))
+def start_game_menu(client_socket) -> int:
+    menu = (
+        "Welcome --\n"
+        ":warning: [bold red] Note that you need to have at least one player to play any mode[/bold red] :warning:\n"
+        "1 - VS AI\n"
+        "2 - VS PLAYER\n"
+        "3 - Back to main\n"
+        "Enter your option number: \n"
+    )
+    client_socket.send(menu.encode())
+    option = int(client_socket.recv(1024).decode())
     return option
 
 
-def create_player_menu():
-    print("Please enter your name: ")
-    name = input("Your Name 🙎🏻‍♂️ :  ")
+def create_player_menu(client_socket):
+    client_socket.send("Please enter your name: \n".encode())
+    client_socket.send("Your Name 🏻‍♂️ : ".encode())
+    name = client_socket.recv(1024).decode()
     if not name:
         clear_terminal()
-        print("Name must contain at least one character")
+        client_socket.send("Name must contain at least one character\n".encode())
 
-        create_player_menu()
+        create_player_menu(client_socket)
 
     user = user_repo.create(User(name=name))
+
     if isinstance(user, Exception):
-        print(f"Error creating user: {user}")
+        client_socket.send(f"Error creating user: {user}".encode())
     else:
-        print(f"Player [blue]{user.name}[/blue] successfully added ! ")
+        client_socket.send(f"Player [blue]{user.name}[/blue] successfully added ! ".encode())
 
 
-def leaderboard_menu():
+def leaderboard_menu(client_socket):
     users = user_repo.get_all()
     table = Table("Player", "Score")
     for user in users:
         table.add_row(user.name, str(user.score))
+    client_socket.send(table)
     print(table)
 
 
-def select_player() -> Optional[User]:
+def select_player(client_socket) -> Optional[User]:
     users = user_repo.get_all()
-    print("Please select the player you want to plays as: ")
+    client_socket.send("Please select the player you want to plays as: (Tap enter to see the players....)\n".encode())
     if users:
 
         for i, user in enumerate(users, start=1):
-            print(f"{i} - {user.name}")
-        chosen_name = input("selected name: (Should write the name not the number)")
+            client_socket.send(f"{i} - {user.name} \n".encode())
+        chosen_name = client_socket.recv(1024).decode()
         for user in users:
             if user.name == chosen_name:
                 clear_terminal()
-                print(f" 🙎‍♂️ {chosen_name} player selected 🙎‍♂️ ")
+                client_socket.send(f" 🙎‍♂️ {chosen_name} player selected 🙎‍♂️ ".encode())
                 return user
         clear_terminal()
-        print("Wrong player")
+        client_socket.send("Wrong player".encode())
 
-        select_player()
+        select_player(client_socket)
 
-    print("There is no players ... ! ")
+    client_socket.send("There is no players ... !".encode())
     return None
 
 
@@ -102,35 +111,40 @@ def get_winner(p1_number: int, p2_number: int) -> Optional[int]:
         return None
 
 
-def play__game_ai():
-    player = select_player()
+def play__game_ai(client_socket):
+    player = select_player(client_socket)
     if not player:
-        print("[bold yellow]Create a user first[/bold yellow]")
+        client_socket.send("[bold yellow]Create a user first[/bold yellow]".encode())
         return None
     ai_score = 0
     player_score = 0
     while True:
         ai_number = random.randint(1, 3)
-        print("1 - ROCK :video_game:")
-        print("2 - PAPER :video_game:")
-        print("3 - SCISSORS :video_game:")
-        player_number = int(input("Which do you chose?: "))
+        menu = (
+            "1 - ROCK :video_game: \n"
+            "2 - PAPER :video_game:\n"
+            "3 - SCISSORS :video_game:\n"
+            "Which do you chose?: \n"
+        )
+        client_socket.send(menu.encode())
+        player_number = int(client_socket.recv(1024).decode())
         if player_number in [1, 2, 3] and ai_number in [1, 2, 3]:
             winner = get_winner(ai_number, player_number)
             if winner == player_number:
                 player_score += 1
                 clear_terminal()
-                print("Congratulations you won :))))")
+                client_socket.send("Congratulations you won :))))".encode())
             else:
                 clear_terminal()
-                print("You lost ")
+                client_socket.send("You lost ".encode())
                 ai_score += 1
         else:
             clear_terminal()
-            print("You can enter number between 1-3 to chose ")
+            client_socket.send("You can enter number between 1-3 to chose ".encode())
             continue
 
-        is_retry = input("Wanna play another match?: (yes-no)").lower()
+        client_socket.send("Wanna play another match?: (yes-no)".encode())
+        is_retry = client_socket.recv(1024).decode().lower()
 
         if is_retry == "no":
             break
@@ -139,11 +153,12 @@ def play__game_ai():
     user_repo.update(player)
 
     if player_score > ai_score:
-        print("You won totally")
+        client_socket.send("You won totally".encode())
+
     elif player_score < ai_score:
-        print("You lost totally")
+        client_socket.send("You lost totally".encode())
     else:
-        print("Draw")
+        client_socket.send("Draw".encode())
 
 
 def play__game_player():
@@ -203,41 +218,3 @@ def play__game_player():
     for player, score in selected_players.items():
         player.score += score
         user_repo.update(player)
-
-
-def main():
-    while True:
-        clear_terminal()
-        selected = main_menu()
-        clear_terminal()
-        if selected == MainMenuOption.START.value:
-            selected_mode = start_game_menu()
-            clear_terminal()
-            if selected_mode == StartMenuOption.AI.value:
-                play__game_ai()
-                print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
-                input()
-            elif selected_mode == StartMenuOption.PLAYER.value:
-                play__game_player()
-                print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
-                input()
-
-            else:
-                continue
-        elif selected == MainMenuOption.CREATE.value:
-            create_player_menu()
-            print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
-            input()
-            continue
-        elif selected == MainMenuOption.LEADERBOARD.value:
-            leaderboard_menu()
-            print("Please enter to redirect to the [bold red]main menu[/bold red] ... ")
-            input()
-            continue
-        else:
-            print("Goodbye :red_heart-emoji:")
-            break
-
-
-if __name__ == '__main__':
-    typer.run(main)
