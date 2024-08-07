@@ -7,7 +7,7 @@ from rich.console import Console
 from rich.table import Table
 
 from database.models import User
-from user_repository import user_repo
+from repository.user_repository import user_repo
 from utils.cli import clear_terminal
 
 
