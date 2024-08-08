@@ -31,7 +31,7 @@ class Game:
                 return p1_number
             return None
 
-    def select_player(self) -> Optional[User]:
+    def select_player(self, *args) -> Optional[User]:
         users = user_repo.get_all()
         self.client_socket.send(
             "Please select the player you want to play as: (ENTER THE NAME NOT NUMBER)\n".encode())

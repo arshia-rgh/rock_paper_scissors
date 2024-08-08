@@ -1,5 +1,7 @@
 import time
+from typing import Optional
 
+from database.models import User
 from repository.user_repository import user_repo
 from utils.cli import clear_terminal
 from .base import Game
@@ -15,44 +17,56 @@ class MultiplayerGame(Game):
         self.__class__.player_1_socket = clients[0]
         self.__class__.player_2_socket = clients[1]
 
-    def play(self):
-        self.client_socket.send("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red])\n".encode())
-        players_number = int(self.client_socket.recv(1024).decode())
-        if players_number < 2:
+    def select_player(self, player_socket) -> Optional[User]:
+        users = user_repo.get_all()
+        if users:
+            for i, user in enumerate(users, start=1):
+                player_socket.send(f"{i} - {user.name} \n".encode())
+            chosen_name = player_socket.recv(1024).decode()
+            for user in users:
+                if user.name == chosen_name:
+                    clear_terminal()
+                    player_socket.send(f" 🙎‍♂️ {chosen_name} player selected 🙎‍♂️ ".encode())
+                    return user
             clear_terminal()
-            self.client_socket.send("You need at least 2 players :)) [You can't play with yourself] 🤓\n".encode())
-            return self.play()
+            player_socket.send("Wrong player".encode())
+            return self.select_player(player_socket)
 
+        player_socket.send("There are no players ... !".encode())
+        return None
+
+    def play(self):
         selected_players = {}
-        for i in range(players_number):
-            player = self.select_player()
-            if not player:
-                self.client_socket.send("[bold yellow]Create a user first[/bold yellow]\n".encode())
-                return None
-            selected_players[player] = 0
+
+        self.player_1_socket.send(
+            "Please select the player you want to play as: (ENTER THE NAME NOT NUMBER)\n".encode()
+        )
+        player_1 = self.select_player(self.player_1_socket)
+        selected_players[player_1] = 0
+
+        self.player_2_socket.send(
+            "Please select the player you want to play as: (ENTER THE NAME NOT NUMBER)\n".encode()
+        )
+        player_2 = self.select_player(self.player_2_socket)
+        selected_players[player_2] = 0
 
         while True:
-            player_1 = random.choice(list(selected_players.keys()))
-            player_2 = random.choice(list(selected_players.keys()))
-            while player_1 == player_2:
-                player_2 = random.choice(list(selected_players.keys()))
-
             self.client_socket.send(
                 f"[bold red]{player_1.name}[/bold red] and [bold red]{player_2.name}[/bold red] will play for the first "
                 f"round\n ".encode())
             self.client_socket.send("The game will start in 3s ...\n".encode())
+
             time.sleep(3)
             clear_terminal()
+
             self.client_socket.send(
                 "1 - ROCK :video_game:\n2 - PAPER :video_game:\n3 - SCISSORS :video_game:\n".encode())
 
-            player_1_socket = self.clients[0]
-            player_1_socket.send(f"What is your choice: -👉{player_1.name}👈-\n".encode())
+            self.player_1_socket.send(f"What is your choice: -👉{player_1.name}👈-\n".encode())
             player_1_choice = int(self.client_socket.recv(1024).decode())
             clear_terminal()
 
-            player_2_socket = self.clients[1]
-            player_2_socket.send(f"What is your choice: -👉{player_2.name}👈-\n".encode())
+            self.player_2_socket.send(f"What is your choice: -👉{player_2.name}👈-\n".encode())
             player_2_choice = int(self.client_socket.recv(1024).decode())
 
             if player_1_choice in [1, 2, 3] and player_2_choice in [1, 2, 3]:
