@@ -1,13 +1,12 @@
 import socket
+import sys
 import threading
 
-import typer
 from game.multiplayer_game import MultiplayerGame
 from game.solo_game import SoloGame
 from menus.constants import *
 from menus.menu import Menu
 from settings.config import SocketConfig
-import sys
 
 clients = []
 
