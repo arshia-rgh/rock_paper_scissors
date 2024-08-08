@@ -43,7 +43,7 @@ def main(game_mode: str):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     server_socket.bind((SocketConfig.HOST_IP, SocketConfig.HOST_PORT))
-    server_socket.listen(5)
+    server_socket.listen(2)
 
     while True:
         client_socket, addr = server_socket.accept()

@@ -1,36 +1,19 @@
 import time
-from typing import Optional
 
-from database.models import User
 from repository.user_repository import user_repo
 from utils.cli import clear_terminal
 from .base import Game
 
 
 class MultiplayerGame(Game):
+    player_1_socket = None
+    player_2_socket = None
+
     def __init__(self, client_socket, clients):
-        self.client_socket = client_socket
+        super().__init__(client_socket)
         self.clients = clients
-
-    def select_player(self) -> Optional[User]:
-        users = user_repo.get_all()
-        self.client_socket.send(
-            "Please select the player you want to play as: (Tap enter to see the players....)\n".encode())
-        if users:
-            for i, user in enumerate(users, start=1):
-                self.client_socket.send(f"{i} - {user.name} \n".encode())
-            chosen_name = self.client_socket.recv(1024).decode()
-            for user in users:
-                if user.name == chosen_name:
-                    clear_terminal()
-                    self.client_socket.send(f" 🙎‍♂️ {chosen_name} player selected 🙎‍♂️ ".encode())
-                    return user
-            clear_terminal()
-            self.client_socket.send("Wrong player".encode())
-            return self.select_player()
-
-        self.client_socket.send("There are no players ... !".encode())
-        return None
+        self.__class__.player_1_socket = clients[0]
+        self.__class__.player_2_socket = clients[1]
 
     def play(self):
         self.client_socket.send("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red])\n".encode())
