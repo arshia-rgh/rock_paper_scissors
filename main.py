@@ -166,14 +166,14 @@ def play__game_ai(client_socket):
         client_socket.send("Draw".encode())
 
 
-def play__game_player(client_socket):
+def play__game_player(client_socket, clients):
     client_socket.send("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red])\n".encode())
     players_number = int(client_socket.recv(1024).decode())
     if players_number < 2:
         clear_terminal()
         client_socket.send("You need at least 2 player :)) [You cant play with yourself] 🤓\n".encode())
 
-        play__game_player(client_socket)
+        play__game_player(client_socket, clients)
 
     selected_players = {}
     for i in range(players_number):
@@ -196,10 +196,15 @@ def play__game_player(client_socket):
         time.sleep(3)
         clear_terminal()
         client_socket.send("1 - ROCK :video_game:\n2 - PAPER :video_game:\n3 - SCISSORS :video_game:\n".encode())
-        client_socket.send(f"What is your choice: -👉{player_1.name}👈-\n".encode())
+
+        player_1_socket = clients[0]
+
+        player_1_socket.send(f"What is your choice: -👉{player_1.name}👈-\n".encode())
         player_1_choice = int(client_socket.recv(1024).decode())
         clear_terminal()
-        client_socket.send(f"What is your choice: -👉{player_2.name}👈-\n".encode())
+
+        player_2_socket = clients[1]
+        player_2_socket.send(f"What is your choice: -👉{player_2.name}👈-\n".encode())
         player_2_choice = int(client_socket.recv(1024).decode())
 
         if player_1_choice in [1, 2, 3] and player_2_choice in [1, 2, 3]:
