@@ -12,9 +12,3 @@ class MainMenuOption(Enum):
     CREATE = 2
     LEADERBOARD = 3
     EXIT = 4
-
-
-class StartMenuOption(Enum):
-    AI = 1
-    PLAYER = 2
-    BACK = 3

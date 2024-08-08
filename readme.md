@@ -1,6 +1,6 @@
 # Rock Paper Scissors Game
 
-<img src="https://img.shields.io/badge/Python-3.x-blue" alt="Python"></img> <img src="https://img.shields.io/badge/Typer-0.12.3-green" alt="Typer"></img> <img src="https://img.shields.io/badge/Rich-13.7.1-purple" alt="Rich"></img>
+<img src="https://img.shields.io/badge/Python-3.x-blue" alt="Python"> <img src="https://img.shields.io/badge/Typer-0.12.3-green" alt="Typer"> <img src="https://img.shields.io/badge/Rich-13.7.1-purple" alt="Rich"> <img src="https://img.shields.io/badge/SQLAlchemy-2.0.31-red" alt="SQLAlchemy"> <img src="https://img.shields.io/badge/Socket-yellow" alt="Socket">
 
 ## Description
 A simple Rock Paper Scissors game implemented in Python.
@@ -21,7 +21,7 @@ A simple Rock Paper Scissors game implemented in Python.
 1. Clone the repository:
     ```sh
     git clone https://github.com/serene1212/rock-paper-scissors.git
-    cd RockPaperScissors
+    cd rock_paper_scissors
     ```
 2. Create a virtual environment:
     ```sh
@@ -47,7 +47,7 @@ alembic upgrade head
 ## Usage
 Run the game using the following command:
 ```sh
-python main.py
+./run.sh
 ```
 ## License
 This project is licensed under the GNU General Public License v3.0. See the [LICENSE](./LICENSE) file for more details.
