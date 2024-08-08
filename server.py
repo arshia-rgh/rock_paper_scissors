@@ -3,7 +3,7 @@ import threading
 
 import typer
 
-from config import SocketConfig
+from settings.config import SocketConfig
 from constants import *
 from main import *
 
