@@ -17,8 +17,7 @@ def handle_client(client_socket):
                 if selected_mode == StartMenuOption.AI.value:
                     play__game_ai(client_socket)
                 elif selected_mode == StartMenuOption.PLAYER.value:
-                    # TODO Implement play__game_player with socket
-                    pass
+                    play__game_player(client_socket)
             elif selected == MainMenuOption.CREATE.value:
                 create_player_menu(client_socket)
             elif selected == MainMenuOption.LEADERBOARD.value:

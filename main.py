@@ -166,20 +166,20 @@ def play__game_ai(client_socket):
         client_socket.send("Draw".encode())
 
 
-def play__game_player():
-    print("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red])")
-    players_number = int(input("Select a number: "))
+def play__game_player(client_socket):
+    client_socket.send("How many players want to play ?: (MIN [bold red]2PLAYERS[/bold red])\n".encode())
+    players_number = int(client_socket.recv(1024).decode())
     if players_number < 2:
         clear_terminal()
-        print("You need at least 2 player :)) [You cant play with yourself] 🤓")
+        client_socket.send("You need at least 2 player :)) [You cant play with yourself] 🤓\n".encode())
 
-        play__game_player()
+        play__game_player(client_socket)
 
     selected_players = {}
     for i in range(players_number):
-        player = select_player()
+        player = select_player(client_socket)
         if not player:
-            print("[bold yellow]Create a user first[/bold yellow]")
+            client_socket.send("[bold yellow]Create a user first[/bold yellow]\n".encode())
             return None
         selected_players[player] = 0
 
@@ -189,37 +189,38 @@ def play__game_player():
         while player_1 == player_2:
             player_2 = random.choice(list(selected_players.keys()))
 
-        print(f"[bold red]{player_1.name}[/bold red] and [bold red]{player_2.name}[/bold red] will play for the first "
-              f"round ")
-        print("The game will be start in 3s ...")
+        client_socket.send(
+            f"[bold red]{player_1.name}[/bold red] and [bold red]{player_2.name}[/bold red] will play for the first "
+            f"round\n ".encode())
+        client_socket.send("The game will be start in 3s ...\n".encode())
         time.sleep(3)
         clear_terminal()
-        print("1 - ROCK :video_game:")
-        print("2 - PAPER :video_game:")
-        print("3 - SCISSORS :video_game:")
-        player_1_choice = int(input(f"What is your choice: -👉{player_1.name}👈-\n"))
+        client_socket.send("1 - ROCK :video_game:\n2 - PAPER :video_game:\n3 - SCISSORS :video_game:\n".encode())
+        client_socket.send(f"What is your choice: -👉{player_1.name}👈-\n".encode())
+        player_1_choice = int(client_socket.recv(1024).decode())
         clear_terminal()
-        player_2_choice = int(input(f"What is your choice: -👉{player_2.name}👈-\n"))
+        client_socket.send(f"What is your choice: -👉{player_2.name}👈-\n".encode())
+        player_2_choice = int(client_socket.recv(1024).decode())
 
         if player_1_choice in [1, 2, 3] and player_2_choice in [1, 2, 3]:
             winner = get_winner(player_1_choice, player_2_choice)
             if winner == player_1_choice:
-                print(f"{player_1.name} won ! ")
+                client_socket.send(f"{player_1.name} won ! \n".encode())
                 selected_players[player_1] += 1
             else:
-                print(f"{player_2.name} won ! ")
+                client_socket.send(f"{player_2.name} won ! \n".encode())
                 selected_players[player_2] += 1
         else:
-            print("You can enter number between 1-3 to chose ")
+            client_socket.send("You can enter number between 1-3 to chose \n".encode())
             continue
-
-        is_retry = input("Wanna play another match?: (yes-no)").lower()
+        client_socket.send("Wanna play another match?: (yes-no)\n".encode())
+        is_retry = client_socket.recv(1024).decode().lower()
 
         if is_retry == "no":
             break
     sorted_by_score_players = dict(sorted(selected_players.items(), key=lambda x: x[1], reverse=True))
     total_winner = next(iter(sorted_by_score_players.items()))[0]
-    print(f"Total winner is {total_winner.name}")
+    client_socket.send(f"Total winner is {total_winner.name}".encode())
     for player, score in selected_players.items():
         player.score += score
         user_repo.update(player)
