@@ -71,4 +71,4 @@ def main(game_mode: str):
 
 if __name__ == "__main__":
     game_mode = sys.argv[1] if len(sys.argv) > 1 else "1"
-    typer.run(main)
+    main(game_mode)
