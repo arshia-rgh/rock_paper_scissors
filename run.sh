@@ -16,6 +16,7 @@ if [ "$game_mode" -eq 1 ]; then
     gnome-terminal -- bash -c "python3 client.py; exec bash"
 elif [ "$game_mode" -eq 2 ]; then
     gnome-terminal -- bash -c "python3 client.py; exec bash"
+    sleep 3
     gnome-terminal -- bash -c "python3 client.py; exec bash"
 else
     echo "Invalid game mode selected."
