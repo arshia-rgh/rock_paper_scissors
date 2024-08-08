@@ -5,7 +5,7 @@ import typer
 
 from settings.config import SocketConfig
 from constants import *
-from main import *
+from main_solo import *
 
 clients = []
 
