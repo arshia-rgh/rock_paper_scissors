@@ -2,37 +2,54 @@ import socket
 import threading
 
 import typer
-
-from main_solo import *
+from game.multiplayer_game import MultiplayerGame
+from game.solo_game import SoloGame
 from menus.constants import *
 from menus.menu import Menu
 from settings.config import SocketConfig
 import sys
+
 clients = []
 
 
 def handle_client(client_socket, game_mode):
     clients.append(client_socket)
     menu = Menu(client_socket)
+
+    if game_mode == "1":
+        game = SoloGame(client_socket)
+
+    elif game_mode == "2":
+        if len(clients) < 2:
+            client_socket.send("Waiting for another player to join...\n".encode())
+
+            while len(clients) < 2:
+                pass
+
+        game = MultiplayerGame(client_socket, clients)
+
+    else:
+        client_socket.send("Invalid game mode".encode())
+        client_socket.close()
+        return
+
     while True:
         try:
             selected = menu.main_menu()
+
             if selected == MainMenuOption.START.value:
-                if game_mode == "1":
-                    play__game_ai(client_socket)
-                elif game_mode == "2":
-                    if len(clients) < 2:
-                        client_socket.send("Waiting for another player to join...\n".encode())
-                        while len(clients) < 2:
-                            pass
-                    play__game_player(client_socket, clients)
+                game.play()
+
             elif selected == MainMenuOption.CREATE.value:
                 menu.create_player_menu()
+
             elif selected == MainMenuOption.LEADERBOARD.value:
                 menu.leaderboard_menu()
+
             else:
                 client_socket.send("Goodbye :red_heart-emoji:".encode())
                 break
+
         except Exception as e:
             print(f"Error: {e}")
             break
