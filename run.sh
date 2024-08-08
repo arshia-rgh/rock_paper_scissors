@@ -12,4 +12,11 @@ python3 server.py "$game_mode" &
 sleep 2
 
 # Start the client in a new terminal window
-gnome-terminal -- bash -c "python3 client.py; exec bash"
+if [ "$game_mode" -eq 1 ]; then
+    gnome-terminal -- bash -c "python3 client.py; exec bash"
+elif [ "$game_mode" -eq 2 ]; then
+    gnome-terminal -- bash -c "python3 client.py; exec bash"
+    gnome-terminal -- bash -c "python3 client.py; exec bash"
+else
+    echo "Invalid game mode selected."
+fi
