@@ -10,26 +10,33 @@ class Game:
         self.client_socket = client_socket
 
     def get_winner(self, p1_number: int, p2_number: int) -> Optional[int]:
-        if p1_number == 1:
-            if p2_number == 3:
-                return p1_number
-            elif p2_number == 2:
-                return p2_number
-            return None
+        win_conditions = {
+            1: {2: 2, 3: 1},
+            2: {1: 2, 3: 3},
+            3: {1: 1, 2: 3},
+        }
+        # if p1_number == 1:
+        #     if p2_number == 3:
+        #         return p1_number
+        #     elif p2_number == 2:
+        #         return p2_number
+        #     return None
+        #
+        # elif p1_number == 2:
+        #     if p2_number == 1:
+        #         return p1_number
+        #     elif p2_number == 3:
+        #         return p2_number
+        #     return None
+        #
+        # else:
+        #     if p2_number == 1:
+        #         return p2_number
+        #     elif p2_number == 2:
+        #         return p1_number
+        #     return None
 
-        elif p1_number == 2:
-            if p2_number == 1:
-                return p1_number
-            elif p2_number == 3:
-                return p2_number
-            return None
-
-        else:
-            if p2_number == 1:
-                return p2_number
-            elif p2_number == 2:
-                return p1_number
-            return None
+        return win_conditions.get(p1_number, {}).get(p2_number)
 
     def select_player(self, *args) -> Optional[User]:
         users = user_repo.get_all()
